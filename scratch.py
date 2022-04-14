@@ -67,12 +67,12 @@ hour_dir = date_dir / block_start_time.strftime('%H')
 block_name = block_start_time.strftime('UTC_%H_%M_00')
 block_path = hour_dir / block_name
 
-n_channels = 3  # TODO update
-block_data = None
-block_data = np.zeros((SECONDS_PER_BLOCK * 128, n_channels))
+# n_channels = 3  # TODO update
+# block_data = None
+# block_data = np.zeros((SECONDS_PER_BLOCK * 128, n_channels))
 # Prepend nans for first block if needed  MAYBE APPEND THIS TO THE FILE DATA INSTEAD
-if file_start.seconds > 0:
-    block_data[:file_start.seconds * 128, :].fill(np.nan)
+# if file_start.seconds > 0:
+#     block_data[:file_start.seconds * 128, :].fill(np.nan)
 
 
 # Iterate through files
