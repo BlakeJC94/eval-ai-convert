@@ -1,4 +1,5 @@
 lightning_logs
+./edf
 ./edf/*
 
 **/*.bak
