@@ -1,6 +1,6 @@
 lightning_logs
-./edf
-./edf/*
+edf
+edf/*
 
 **/*.bak
 test_results
