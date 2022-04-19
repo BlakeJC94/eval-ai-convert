@@ -13,10 +13,12 @@ def save_session_to_parquet(df: pd.DataFrame, session_dir: Path) -> None:
     """
     chunks = df.groupby(pd.Grouper(key='time',freq='1Min'))
     for t, chunk in chunks:
+        assert len(chunk) == 7680
+        chunk = chunk.drop('time', axis=1)  # Try droppping time to see if this makes files smaller.
         table = pa.Table.from_pandas(chunk)
 
         pq_path = Path('parquet').joinpath(*session_dir.parts[1:])
         pq_path.mkdir(parents=True, exist_ok=True)
         pq_path = pq_path / t.strftime('UTC-%Y_%m_%d-%H_%M_%S.parquet')
 
-        pq.write_table(table, pq_path, version='2.6')  # version required for nanosecond timestamps
+        pq.write_table(table, pq_path)

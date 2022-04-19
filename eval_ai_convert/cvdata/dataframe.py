@@ -36,7 +36,8 @@ def session_dataframe(
     if pad:
         df = _pad_session_df(df)
 
-    df = df.reset_index().rename(columns={'index': 'time'})
+    df = df.reset_index()
+    df = df.rename(columns={'index': 'time'})
     return df
 
 
