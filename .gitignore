@@ -1,6 +1,10 @@
 lightning_logs
 edf
 edf/*
+parquet/*
+parquet
+pq/*
+pq
 
 **/*.bak
 test_results
