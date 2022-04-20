@@ -113,7 +113,7 @@ def _get_channel_group_dataframe(
         file_df = pd.DataFrame(columns=column_names[dtype])
     else:
         file_df = pd.DataFrame(
-            file.get_data().transpose(),
+            data=np.array(file.get_data().transpose(), dtype=np.float32),
             index=_get_index_from_file(file),
             columns=column_names[dtype],
         )
