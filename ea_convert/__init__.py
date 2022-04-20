@@ -1,2 +1,2 @@
-from .convert_data import convert_data
+from .convert import convert
 from .globals import *
