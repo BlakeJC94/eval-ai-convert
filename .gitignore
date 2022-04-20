@@ -1,10 +1,17 @@
-lightning_logs
 edf
 edf/*
 parquet/*
 parquet
 pq/*
 pq
+data/edf
+data/edf/*
+data/parquet/*
+data/parquet
+data/pq/*
+data/pq
+data/artifacts
+data/artifacts/*
 
 **/*.bak
 test_results
