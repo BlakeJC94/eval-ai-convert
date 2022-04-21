@@ -38,7 +38,7 @@ def get_file_start_times(patient_ids: List[str], multiproc: bool = False):
             starts.append(_get_start(fp))
     else:
         logger.info(f"Getting file start times using parallel processes")
-        with mp.Pool() as pool:
+        with mp.Pool(6) as pool:
             starts = list(
                 tqdm(
                     pool.imap(_get_start, edf_files, chunksize=50),
