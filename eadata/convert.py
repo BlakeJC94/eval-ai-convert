@@ -1,5 +1,6 @@
+import logging
+
 from .data import (
-    all_session_dirs,
     get_session_dataframe,
     save_session_to_parquet,
 )
@@ -10,6 +11,8 @@ from .paths import (
     write_dodgy_sessions,
 )
 
+logger = logging.getLogger(__name__)
+
 
 def convert(patient_id: str) -> None:
     """Converts all sessions from EDF files to parquet files"""
@@ -17,11 +20,11 @@ def convert(patient_id: str) -> None:
 
     dodgy_sessions = []
     for i, session_dir in enumerate(session_dirs, start=1):
-        print(f"{i}/{len(session_dirs)} : {session_dir}")
+        logger.info(f"{i}/{len(session_dirs)} : {session_dir}")
 
         df = get_session_dataframe(session_dir)
         if df is None:
-            print(f"  WARNING : {session_dir} is dodgy, skipping")
+            logger.warning(f"{session_dir} is dodgy, skipping")
             dodgy_sessions.append(session_dir)
             continue
 

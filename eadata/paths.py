@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 from typing import List
 
@@ -13,6 +14,8 @@ PARQUET_PATH = DATA_DIR / 'parquet'
 SZTIMES_PATH = DATA_DIR / 'sztimes'
 ARTIFACTS_PATH = DATA_DIR / 'artifacts'
 OUTPUT_DIR = DATA_DIR / 'output'
+
+logger = logging.getLogger(__name__)
 
 
 def all_session_dirs(patient_id: str) -> List[Path]:
@@ -41,7 +44,7 @@ def write_dodgy_sessions(dodgy_sessions: List[Path], patient_id: str) -> None:
         patient_id: Patient ID.
     """
     if len(dodgy_sessions) == 0:
-        print(f"  No dodgy sessions encountered for {patient_id =}.")
+        logger.info(f"No dodgy sessions encountered for {patient_id =}.")
         return
 
     dodgy_list_path = Path(ARTIFACTS_PATH) / patient_id

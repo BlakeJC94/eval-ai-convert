@@ -11,8 +11,8 @@ Requirements can be updated using `pip-compile`:
 from setuptools import setup, find_packages
 
 setup(
-    name="ea_convert",
-    version="0.3.0",
+    name="eadata",
+    version="0.5.0",
     description='Python package for converting Eval AI dataset',
     url="https://github.com/BlakeJC94/eval-ai-convert",
     author="BlakeJC94",
@@ -27,6 +27,6 @@ setup(
         'tqdm',
     ],
     entry_points={
-        'console_scripts': ['ea-convert=ea_convert.__main__:main'],
+        'console_scripts': ['eadata=eadata.__main__:main'],
     },
 )
