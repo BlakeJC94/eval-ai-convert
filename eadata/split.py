@@ -3,12 +3,10 @@ import logging
 
 import numpy as np
 
-from .globals import PATIENT_IDS
+from .globals import PATIENT_IDS, SPLIT_NAMES
 from .paths import PARQUET_PATH
 
 logger = logging.getLogger(__name__)
-
-SPLIT_NAMES = ['train', 'test', 'val']
 
 
 def split(patient_id: str, train_prop: float, test_prop: float):

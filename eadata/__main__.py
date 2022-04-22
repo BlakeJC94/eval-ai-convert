@@ -3,6 +3,7 @@ import fire
 from . import ambtimes
 from . import convert
 from . import split
+from . import label
 
 
 def main():
@@ -10,6 +11,7 @@ def main():
         'convert': convert,
         'ambtimes': ambtimes,
         'split': split,
+        'label': label,
     })
 
 
