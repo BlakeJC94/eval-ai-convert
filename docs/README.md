@@ -58,8 +58,16 @@ $ eadata convert <pid>
 * Problematic sessions will be recorded to `./data/artifacts` if detected
 * Set `--multiproc False` to disable parallel processing
 
+Create train/test/val split across sessions in parquet:
+```bash
+$ eadata split <pid> <train_prop> <test_prop>
+```
+* exising splits will be undone before creating new split
+* Splits data in `./data/parquet/<pid>` by file size into `train` `test` and `val`
+
 Generate labels csv mapping parquet files to integers:
 ```bash
 $ eadata labels
 ```
+
 
