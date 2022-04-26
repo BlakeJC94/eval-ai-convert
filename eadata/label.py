@@ -52,11 +52,11 @@ def label(
             if fp.suffix == '.parquet'
         ])
 
-        split_labels = pd.DataFrame(split_files, columns=['filepath'])
+        labels_df = pd.DataFrame(split_files, columns=['filepath'])
         get_time = lambda x: pd.to_datetime(x.stem, format='UTC-%Y_%m_%d-%H_%M_%S', utc=True)
-        split_labels['label'] = split_labels.filepath.apply(get_time).isin(positive_times)
+        labels_df['label'] = labels_df.filepath.apply(get_time).isin(positive_times).astype(int)
 
-        if not split_labels.label.any():
+        if not labels_df.label.any():
             logger.warning(f"No labels for {patient_id} {split_name}")
 
-        split_labels.to_csv(split_labels_path, index=False)
+        labels_df.to_csv(split_labels_path, index=False)
