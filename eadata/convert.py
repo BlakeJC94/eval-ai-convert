@@ -54,17 +54,4 @@ def _convert_session(session_dir: Path) -> Optional[Path]:
         return session_dir
 
     save_session_to_parquet(df, session_dir)
-
-    dodgy_sessions = []
-    for i, session_dir in enumerate(session_dirs, start=1):
-        logger.info(f"{i}/{len(session_dirs)} : {session_dir}")
-
-        df = get_session_dataframe(session_dir)
-        if df is None:
-            logger.warning(f"{session_dir} is dodgy, skipping")
-            dodgy_sessions.append(session_dir)
-            continue
-
-        save_session_to_parquet(df, session_dir)
-
-    write_dodgy_sessions(dodgy_sessions, patient_id)
+    return None
