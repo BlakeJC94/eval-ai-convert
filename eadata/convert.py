@@ -54,7 +54,6 @@ def _convert_session(session_dir: Path) -> Optional[Path]:
         return session_dir
 
     save_session_to_parquet(df, session_dir)
-    return None
 
     dodgy_sessions = []
     for i, session_dir in enumerate(session_dirs, start=1):
