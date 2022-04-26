@@ -32,7 +32,7 @@ def convert(patient_id: str, multiproc: bool = True) -> None:
             dodgy_session_dirs.append(out)
 
     else:
-        logger.info("Converting sessions using parallel processes")
+        logger.info("Converting sessions using 6 parallel processes")
         with mp.Pool(6) as pool:
             dodgy_session_dirs = list(
                 tqdm(
