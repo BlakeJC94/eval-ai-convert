@@ -21,7 +21,18 @@ logger = logging.getLogger(__name__)
 
 
 def convert(patient_id: str, multiproc: bool = True) -> None:
-    """Converts all sessions from EDF files to parquet files"""
+    """Converts all sessions from EDF files to parquet files.
+
+    Converts EDF files in `edf/<patient_id>/<session_timestamp>/*.edf` to Parquet files in
+    `parquet/<patient_id>/<session_timestamp>/*.parquet`. EDF files are saved per channel group,
+    whereas parquet files are saved per block of time.
+
+    Some sessions may be dodgy, in which case they are skipped and recorded to artifacts.
+
+    Args:
+        patient_id: Patient ID to convert.
+        multiproc: Whether to use multiprocessing
+    """
     session_dirs = all_session_dirs(str(patient_id))
 
     if not multiproc:
@@ -48,6 +59,7 @@ def convert(patient_id: str, multiproc: bool = True) -> None:
 
 
 def _convert_session(session_dir: Path) -> Optional[Path]:
+    """Helper function for multiprocessing."""
     df = get_session_dataframe(session_dir)
     if df is None:
         logger.warning(f"{session_dir} is dodgy, skipping")

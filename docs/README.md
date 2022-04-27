@@ -43,31 +43,12 @@ $ pip install -e .
 
 ## Usage
 
-Check times in files and labels for DST ambiguities:
+Check docs in CLI:
 ```bash
-$ eadata ambtimes [pid]
-```
-* If `pid` is omitted, all data will be analysed.
-* Ambiguious times will be written to stdout and `./data/artifacts`
-
-Convert data from edf to parquet:
-```bash
-$ eadata convert <pid>
-```
-* output will be saved as 1-min parquet files in `./data/parquet/<pid>/<session_timestamp>`
-* Problematic sessions will be recorded to `./data/artifacts` if detected
-* Set `--multiproc False` to disable parallel processing
-
-Create train/test/val split across sessions in parquet:
-```bash
-$ eadata split <pid> <train_prop> <test_prop>
-```
-* exising splits will be undone before creating new split
-* Splits data in `./data/parquet/<pid>` by file size into `train` `test` and `val`
-
-Generate labels csv mapping parquet files to integers:
-```bash
-$ eadata labels
+# Get list of commands:
+$ eadata --help
+# Get help for particular command:
+$ eadata convert --help
 ```
 
 

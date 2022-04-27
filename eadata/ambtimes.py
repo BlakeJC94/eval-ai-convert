@@ -30,6 +30,13 @@ AMBIGUOUS_TIMES = [
 ]
 
 def ambtimes(patient_id: Optional[str] = None):
+    """Check local times in edf files and sztimes for DST ambiguities.
+
+    Ambigious times will be written to stdout and `.data/artifacts`
+
+    Args:
+        patient_id: If omitted, all EDF files will be checked.
+    """
     if patient_id is None:
         logger.info("Analysing times for all patients")
         patient_ids = PATIENT_IDS.copy()

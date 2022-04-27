@@ -10,6 +10,18 @@ logger = logging.getLogger(__name__)
 
 
 def split(patient_id: str, train_prop: float, test_prop: float):
+    """Create train/test/val split across sessions in parquet.
+
+    Requires converted data in parquet format, see `convert`.
+
+    Splits data in `./data/parquet/<pid>` by file size into `train` `test` and `val`. Exising
+    splits will be undone before creating new split.
+
+    Args:
+        patient_id: Patient ID.
+        train_prop: Proportion of data to use for training.
+        test_prop: Proportion of data to use for testing, remaining proportion for validation.
+    """
     assert train_prop > 0 and test_prop > 0
     assert train_prop + test_prop <= 1.0, "Proportions must sum to 1.0"
     assert str(patient_id) in PATIENT_IDS, "Patient ID not found"

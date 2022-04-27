@@ -17,6 +17,18 @@ def label(
     setback: int = 15 * 60,
     lead_gap: int = 4 * 60 * 60,
 ):
+    """Generate labels csv mapping parquet files to integers.
+
+    Requires converted parquet dataset to be split, see `split` and `convert`.
+
+    Saves csv files mapping filenames to labels in PARQUET_PATH.
+
+    Args:
+        patient_id: patient id.
+        forecast_window: size of forecast window in seconds.
+        setback: size of seback in seconds.
+        lead_gap: size of lead gap in seconds.
+    """
 
     assert str(patient_id) in PATIENT_IDS, f"{patient_id} not in {PATIENT_IDS}"
     assert all((PARQUET_PATH / str(patient_id) / split).exists() for split in SPLIT_NAMES), \
