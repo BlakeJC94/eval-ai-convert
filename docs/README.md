@@ -4,10 +4,11 @@ Scripts for converting Eval AUI dataset
 
 ## Setup
 
-Create a softlink to the dataset:
+Create a link to the dataset:
 
 ```bash
 $ ln -s <path-to-eval-al-data> ./data/edf
+$ ln -s <path-to-eval-al-sztimes> ./data/sztimes
 ```
 
 Expected file structure in `path-to-eval-al-data`:
@@ -31,9 +32,19 @@ Expected file structure in `path-to-eval-al-data`:
       ...
 ```
 
-Create a link to another directory to storethe parquet output:
+Expected file structure in `path-to-eval-al-sztimes`:
+```
+  sztimes/
+  ├── 1110.pkl
+  ├── 1869.pkl
+  ...
+  └── 2002.pkl
+```
+
+Create a link to another directory to store outputs:
 ```bash
 $ ln -s <path-to-save-converted-data> ./data/parquet
+$ ln -s <path-to-save-artifacts> ./data/artifacts
 ```
 
 Install the python package:

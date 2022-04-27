@@ -36,6 +36,11 @@ def all_session_dirs(patient_id: str) -> List[Path]:
     return session_dirs
 
 
+def get_session_ind(patient_id: str, session_timestamp: str) -> str:
+    session_ind = sorted([fp.stem for fp in all_session_dirs(patient_id)]).index(session_timestamp)
+    return str(session_ind).zfill(3)
+
+
 def write_dodgy_sessions(dodgy_sessions: List[Path], patient_id: str) -> None:
     """Records dodgy files to txt file.
 

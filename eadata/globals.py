@@ -3,3 +3,5 @@ DTYPES = ['ACC', 'BVP', 'EDA', 'HR', 'TEMP']
 SRATE = 128
 
 SPLIT_NAMES = ['train', 'test', 'val']
+TIMESTAMP_FORMAT = "UTC-%Y_%m_%d-%H_%M_%S"
+

@@ -43,8 +43,8 @@ def convert(patient_id: str, multiproc: bool = True) -> None:
             dodgy_session_dirs.append(out)
 
     else:
-        logger.info("Converting sessions using 6 parallel processes")
-        with mp.Pool(6) as pool:
+        logger.info("Converting sessions using parallel processes")
+        with mp.Pool() as pool:
             dodgy_session_dirs = list(
                 tqdm(
                     pool.imap(_convert_session, session_dirs),
@@ -55,14 +55,23 @@ def convert(patient_id: str, multiproc: bool = True) -> None:
                 ))
 
     dodgy_sessions = [i for i in dodgy_session_dirs if i is not None]
-    write_dodgy_sessions(dodgy_sessions, patient_id)
+
+    if len(dodgy_sessions) > 0:
+        logger.warning(f"{len(dodgy_sessions)} sessions are dodgy, skipping")
+        write_dodgy_sessions(dodgy_sessions, patient_id)
 
 
 def _convert_session(session_dir: Path) -> Optional[Path]:
-    """Helper function for multiprocessing."""
+    """Helper function for multiprocessing.
+
+    Args:
+        session_dir: Path to session directory.
+
+    Returns:
+        None if successful. If unsucessful, returns session_dir"""
     df = get_session_dataframe(session_dir)
     if df is None:
-        logger.warning(f"{session_dir} is dodgy, skipping")
+        # logger.warning(f"{session_dir} is dodgy, skipping")
         return session_dir
 
     save_session_to_parquet(df, session_dir)
