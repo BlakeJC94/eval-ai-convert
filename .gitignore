@@ -23,13 +23,9 @@ seeralgo/utils/debugging
 saved_models
 *.ckpt
 */runs/*
-data/
 data_cache
 metadata_cache
 result.csv
-seeralgo/data_cache
-seeralgo/metadata_cache
-seeralgo/result.csv
 *.hdf5
 *Untitled*
 # *.png  # needed for docs

@@ -5,7 +5,7 @@ import logging
 import pandas as pd
 import numpy as np
 
-from .globals import PATIENT_IDS, SPLIT_NAMES
+from .globals import PATIENT_IDS, SPLIT_NAMES, TIMESTAMP_FORMAT
 from .paths import PARQUET_PATH, SZTIMES_PATH, ARTIFACTS_PATH
 
 logger = logging.getLogger(__name__)
@@ -26,8 +26,8 @@ def label(
     Args:
         patient_id: patient id.
         forecast_window: size of forecast window in seconds.
-        setback: size of seback in seconds.
-        lead_gap: size of lead gap in seconds.
+        setback: Time in between forecast window and sztime in seconds (0 to disable setback).
+        lead_gap: Size of window where following seizures are dropped (-1 to disable dropping).
     """
 
     assert str(patient_id) in PATIENT_IDS, f"{patient_id} not in {PATIENT_IDS}"
@@ -38,10 +38,11 @@ def label(
         sztimes = pickle.load(f)['utc']
 
     # drop non-lead seizures
-    sztimes = sztimes[sztimes.diff().dt.total_seconds() > lead_gap]
+    sztimes = sztimes[sztimes.diff().dt.total_seconds().fillna(1e6) > lead_gap]
+    sztimes = sztimes.reset_index(drop=True)
 
     # Process sztimes into a series of UTC times (minute floored) which are positive labels
-    positive_times = pd.Series(dtype=int)
+    positive_times = None
     for t in sztimes:
         forecast_times = t + pd.to_timedelta(np.arange(-forecast_window, 0, 60) - setback, 's')
         forecast_times = pd.Series(forecast_times).dt.floor('1min')
@@ -65,7 +66,7 @@ def label(
         ])
 
         labels_df = pd.DataFrame(split_files, columns=['filepath'])
-        get_time = lambda x: pd.to_datetime(x.stem, format='UTC-%Y_%m_%d-%H_%M_%S', utc=True)
+        get_time = lambda x: pd.to_datetime(x.stem, format=TIMESTAMP_FORMAT, utc=True)
         labels_df['label'] = labels_df.filepath.apply(get_time).isin(positive_times).astype(int)
 
         if not labels_df.label.any():
