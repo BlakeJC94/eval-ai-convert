@@ -22,7 +22,7 @@ def save_session_to_parquet(df: pd.DataFrame, session_dir: Path) -> None:
     pq_dir = Path(PARQUET_PATH) / pid / session_ind
     pq_dir.mkdir(parents=True, exist_ok=True)
 
-    chunks = df.groupby(pd.Grouper(key='time', freq='1min'))
+    chunks = df.groupby(pd.Grouper(key='time', freq='H'))
     for time, chunk in chunks:
         chunk = chunk.drop('time', axis=1)  # Try droppping time to see if this makes files smaller.
         table = pa.Table.from_pandas(chunk)

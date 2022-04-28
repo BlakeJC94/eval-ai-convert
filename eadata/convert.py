@@ -55,7 +55,6 @@ def convert(patient_id: str, multiproc: bool = True) -> None:
                 ))
 
     dodgy_sessions = [i for i in dodgy_session_dirs if i is not None]
-
     if len(dodgy_sessions) > 0:
         logger.warning(f"{len(dodgy_sessions)} sessions are dodgy, skipping")
         write_dodgy_sessions(dodgy_sessions, patient_id)
@@ -68,10 +67,10 @@ def _convert_session(session_dir: Path) -> Optional[Path]:
         session_dir: Path to session directory.
 
     Returns:
-        None if successful. If unsucessful, returns session_dir"""
+        None if successful. If unsucessful, returns session_dir
+    """
     df = get_session_dataframe(session_dir)
     if df is None:
-        # logger.warning(f"{session_dir} is dodgy, skipping")
         return session_dir
 
     save_session_to_parquet(df, session_dir)

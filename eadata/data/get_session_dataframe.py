@@ -51,7 +51,7 @@ def _pad_session_df(df: pd.DataFrame) -> pd.DataFrame:
         Padded dataframe.
     """
     df_start = df.index[0]
-    block_start = df_start.floor('1min')
+    block_start = df_start.floor('H')
     if block_start != df_start:
         start_pad_index = pd.to_timedelta(
             np.arange((df_start - block_start).total_seconds(), 0, -1 / 128), 's')
@@ -59,7 +59,7 @@ def _pad_session_df(df: pd.DataFrame) -> pd.DataFrame:
         df = pd.concat([start_pad, df], axis=0)
 
     df_end = df.index[-1]
-    block_end = df_end.ceil('1min')
+    block_end = df_end.ceil('H')
     if block_end != df_end:
         end_pad_index = pd.to_timedelta(
             np.arange(1 / 128, (block_end - df_end).total_seconds(), 1 / 128), 's')
