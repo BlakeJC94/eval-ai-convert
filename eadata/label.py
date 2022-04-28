@@ -16,6 +16,7 @@ def label(
     forecast_window: int = 60 * 60,
     setback: int = 15 * 60,
     lead_gap: int = 4 * 60 * 60,
+    augment_data = True,
 ):
     """Generate labels csv mapping parquet files to integers.
 
@@ -28,6 +29,7 @@ def label(
         forecast_window: size of forecast window in seconds.
         setback: Time in between forecast window and sztime in seconds (0 to disable setback).
         lead_gap: Size of window where following seizures are dropped (-1 to disable dropping).
+        augment_data: Whether to augment positive samples with 1 minute shifts across setback.
     """
 
     assert str(patient_id) in PATIENT_IDS, f"{patient_id} not in {PATIENT_IDS}"
@@ -41,12 +43,16 @@ def label(
     sztimes = sztimes[sztimes.diff().dt.total_seconds().fillna(1e6) > lead_gap]
     sztimes = sztimes.reset_index(drop=True)
 
-    # Process sztimes into a series of UTC times (minute floored) which are positive labels
-    positive_times = None
-    for t in sztimes:
-        forecast_times = t + pd.to_timedelta(np.arange(-forecast_window, 0, 60) - setback, 's')
-        forecast_times = pd.Series(forecast_times).dt.floor('1min')
-        positive_times = pd.concat([positive_times, forecast_times])
+    # TODO remove this
+    # # Process sztimes into a series of UTC times (minute floored) which are positive labels
+    # positive_times = None
+    # for t in sztimes:
+    #     forecast_times = t + pd.to_timedelta(np.arange(-forecast_window, 0, 60) - setback, 's')
+    #     forecast_times = pd.Series(forecast_times).dt.floor('1min')
+    #     positive_times = pd.concat([positive_times, forecast_times])
+
+    # this dataset should be conceptualized as a 1 hour window with a 1 minute stride, and we just
+    # drop the overlapping chunks when there is no seizure in the next 15 mins.
 
     # Create csv for each split
     for split_name in SPLIT_NAMES:
@@ -67,7 +73,11 @@ def label(
 
         labels_df = pd.DataFrame(split_files, columns=['filepath'])
         get_time = lambda x: pd.to_datetime(x.stem, format=TIMESTAMP_FORMAT, utc=True)
-        labels_df['label'] = labels_df.filepath.apply(get_time).isin(positive_times).astype(int)
+        labels_df['label'] = labels_df.filepath.apply(get_time).isin(sztimes.dt.floor('H')).astype(int)
+
+        if augment_data and split_name == 'train':
+            # TODO Load dataframe triplet and create moving window
+            pass
 
         if not labels_df.label.any():
             logger.warning(f"No labels for {patient_id} {split_name}")
