@@ -1,12 +1,12 @@
+import warnings
 from pathlib import Path
 from pytz import timezone, utc
-from typing import Optional
+from typing import Optional, Dict
 
 import pandas as pd
 import numpy as np
 import mne
 
-from .load_session_data import load_session_data
 from eadata.globals import DTYPES, SRATE
 
 mne.set_log_level(False)
@@ -36,8 +36,6 @@ def get_session_dataframe(
     if pad:
         df = _pad_session_df(df)
 
-    df = df.reset_index()
-    df = df.rename(columns={'index': 'time'})
     return df
 
 
@@ -115,3 +113,26 @@ def _get_channel_group_dataframe(
             columns=column_names[dtype],
         )
     return file_df
+
+
+def load_session_data(session_dir: Path) -> Dict[str, Optional[mne.io.edf.edf.RawEDF]]:
+    """Loads each DTYPE edf file located in a session dir.
+
+    Args:
+        session_dir: Path to session directory.
+
+    Returns:
+        Dictionary of DTYPE files. If an error occurs during loading an EDF file, `None` is stored
+        as the value.
+    """
+    files = {}
+    with warnings.catch_warnings():
+        warnings.simplefilter('error')
+        for dtype in DTYPES:
+            fp = session_dir / f"Empatica-{dtype}.edf"
+            try:
+                files[dtype] = mne.io.read_raw_edf(fp)
+            except:
+                files[dtype] = None
+
+    return files

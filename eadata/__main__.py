@@ -1,7 +1,7 @@
 import fire
 
 from . import ambtimes
-from . import augment
+from . import clean
 from . import convert
 from . import split
 from . import label
@@ -13,7 +13,7 @@ def main():
         'ambtimes': ambtimes,
         'split': split,
         'label': label,
-        'augment': augment,
+        'clean': clean,
     })
 
 
