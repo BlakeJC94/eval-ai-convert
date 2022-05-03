@@ -12,7 +12,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="eadata",
-    version="0.5.0",
+    version="0.7.0",
     description='Python package for converting Eval AI dataset',
     url="https://github.com/BlakeJC94/eval-ai-convert",
     author="BlakeJC94",
