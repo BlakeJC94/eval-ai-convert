@@ -20,7 +20,7 @@ def label(
     setback: int = 15 * 60,
     lead_gap: int = 4 * 60 * 60,
 ):
-    """Generate labels csv mapping parquet files to integers.
+    """Generate labels csv mapping parquet files to integers and augments dataset.
 
     Requires converted parquet dataset to be split, see `split` and `convert`.
 
