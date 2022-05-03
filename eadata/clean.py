@@ -35,21 +35,19 @@ def clean(
         [fp for fp in (PARQUET_PATH / str(patient_id)).glob('**/*') if fp.suffix == '.parquet'],
         key=lambda fp: fp.stem,
     )
+
+    files_to_delete = [
+        fp for fp in all_files
+        if pd.to_datetime(fp.stem, format=TIMESTAMP_FORMAT).minute != 0
+    ]
+
+    for fp in files_to_delete:
+        fp.unlink()
+
+    files_to_delete = [str(Path().joinpath(*fp.parts[-4:])) for fp in files_to_delete]
     for split_name in SPLIT_NAMES:
-        split_files = [fp for fp in all_files if fp.parent.parent.stem == split_name]
-        files_to_delete = [
-            fp for fp in split_files
-            if pd.to_datetime(fp.stem, format=TIMESTAMP_FORMAT).minute != 0
-        ]
-
-        for fp in files_to_delete:
-            fp.unlink()
-
-        files_to_delete = [str(Path().joinpath(*fp.parts[-4:])) for fp in files_to_delete]
-
         split_labels_path = ARTIFACTS_PATH / f'{patient_id}_{split_name}_labels.csv'
         labels_df = pd.read_csv(split_labels_path)
-
         labels_df = labels_df[~labels_df.filepath.isin(files_to_delete)].reset_index(drop=True)
         labels_df.to_csv(split_labels_path, index=False)
 
