@@ -52,7 +52,7 @@ def write_dodgy_sessions(dodgy_sessions: List[Path], patient_id: str) -> None:
         logger.info(f"No dodgy sessions encountered for {patient_id =}.")
         return
 
-    dodgy_list_path = Path(ARTIFACTS_PATH) / patient_id
+    dodgy_list_path = Path(ARTIFACTS_PATH) / str(patient_id)
     dodgy_list_path.mkdir(exist_ok=True, parents=True)
 
     dodgy_list = dodgy_list_path / 'dodgy_files.txt'

@@ -44,7 +44,7 @@ def convert(patient_id: str, multiproc: bool = True) -> None:
 
     else:
         logger.info("Converting sessions using parallel processes")
-        with mp.Pool() as pool:
+        with mp.Pool(2) as pool:
             dodgy_session_dirs = list(
                 tqdm(
                     pool.imap(_convert_session, session_dirs),
