@@ -14,8 +14,9 @@ def split(patient_id: str, train_prop: float, test_prop: float):
 
     Requires converted data in parquet format, see `convert`.
 
-    Splits data in `./data/parquet/<pid>` by file size into `train` `test` and `val`. Exising
-    splits will be undone before creating new split.
+    Splits data in `./data/parquet/<pid>` by file size into `./data/parquet/<pid>/<split>`, where
+    `<split>` is either `train`, `test`, or `val`. Existing splits will be undone before creating
+    new split.
 
     Args:
         patient_id: Patient ID.
@@ -36,7 +37,7 @@ def split(patient_id: str, train_prop: float, test_prop: float):
 
     # If sessions in PARQUET_DIR are already split, undo the split before proceeding
     for split_name in SPLIT_NAMES:
-        split_path = patient_path / split_name
+        split_path = PARQUET_PATH / split_name / str(patient_id)
         if split_path.exists():
             logger.info(f"Found {split_name} split, undoing before proceeding")
             for session in split_path.iterdir():
@@ -63,7 +64,7 @@ def split(patient_id: str, train_prop: float, test_prop: float):
 
     # Move sessions to their splits
     for split_name, session_dirs in splits.items():
-        split_path = patient_path / split_name
+        split_path = PARQUET_PATH / split_name / str(patient_id)
         split_path.mkdir(exist_ok=True)
         logger.info(f"Creating {split_name} split")
 
