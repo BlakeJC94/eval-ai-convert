@@ -12,6 +12,8 @@ data/pq/*
 data/pq
 data/artifacts
 data/artifacts/*
+data/outputs
+data/outputs/*
 predictions.csv
 
 **/*.bak
