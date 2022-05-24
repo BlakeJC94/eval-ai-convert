@@ -12,6 +12,7 @@ data/pq/*
 data/pq
 data/artifacts
 data/artifacts/*
+predictions.csv
 
 **/*.bak
 test_results

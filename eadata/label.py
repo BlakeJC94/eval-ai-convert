@@ -71,15 +71,14 @@ def label(
 
         # Get filenames in split
         split_files = [
-            Path().joinpath(*fp.parts[-4:])
+            Path('data') / Path().joinpath(*fp.parts[-4:])
             for fp in all_files
             if fp.parent.parent.stem == split_name
         ]
 
         # Get list of times in split
         split_times = [
-            pd.to_datetime(fp.stem, format=TIMESTAMP_FORMAT, utc=True)
-            for fp in split_files
+            pd.to_datetime(fp.stem, format=TIMESTAMP_FORMAT, utc=True) for fp in split_files
         ]
 
         # Create augmented samples for `positive_times` that are not in `split_times`
@@ -119,7 +118,7 @@ def label(
             pq.write_table(table, pq_path)
 
             # Add new samples to split_files
-            split_files.append(Path().joinpath(*pq_path.parts[-4:]))
+            split_files.append(Path('data') / Path().joinpath(*pq_path.parts[-4:]))
 
         # Get label for each file arranged in a dataframe
         labels_df = pd.DataFrame(sorted(split_files), columns=['filepath'])
