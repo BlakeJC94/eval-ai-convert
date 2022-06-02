@@ -34,8 +34,8 @@ def label(
     """
 
     assert str(patient_id) in PATIENT_IDS, f"{patient_id} not in {PATIENT_IDS}"
-    assert all((PARQUET_PATH / str(patient_id) / split).exists() for split in SPLIT_NAMES), \
-        "Not all splits exist, run `eadata split <pid> <train_prop> <test_prop>` first."
+    assert all((PARQUET_PATH / split / str(patient_id)).exists() for split in SPLIT_NAMES), \
+        "Not all splits exist, run `eadata split <pid> <train_prop>,<test_prop>` first."
 
     with open(str(SZTIMES_PATH / f'{patient_id}.pkl'), 'rb') as f:
         sztimes = pickle.load(f)['utc']
@@ -55,10 +55,10 @@ def label(
         # Add to list of positive times
         positive_times = pd.concat([positive_times, pd.Series(forecast_times)])
 
-    all_files = sorted(
-        [fp for fp in (PARQUET_PATH / str(patient_id)).glob('**/*') if fp.suffix == '.parquet'],
-        key=lambda fp: fp.stem,
-    )
+    file_glob = f'**/{str(patient_id)}/**/*'
+    all_files = [fp for fp in PARQUET_PATH.glob(file_glob) if fp.suffix == '.parquet']
+    all_files = sorted(all_files, key=lambda fp: fp.stem)
+
     # Create csv for each split
     for split_name in SPLIT_NAMES:
         logger.info(f'Creating labels csv for patient_id {patient_id} {split_name} split')
@@ -69,11 +69,9 @@ def label(
         if split_labels_path.exists():
             split_labels_path.unlink()
 
-        # Get filenames in split
+        # Get filenames in split ('<pid>/<session>/<file>')
         split_files = [
-            Path('data') / Path().joinpath(*fp.parts[-4:])
-            for fp in all_files
-            if fp.parent.parent.stem == split_name
+            Path().joinpath(*fp.parts[-3:]) for fp in all_files if fp.parts[-4] == split_name
         ]
 
         # Get list of times in split
@@ -118,7 +116,7 @@ def label(
             pq.write_table(table, pq_path)
 
             # Add new samples to split_files
-            split_files.append(Path('data') / Path().joinpath(*pq_path.parts[-4:]))
+            split_files.append(Path().joinpath(*pq_path.parts[-3:]))
 
         # Get label for each file arranged in a dataframe
         labels_df = pd.DataFrame(sorted(split_files), columns=['filepath'])
