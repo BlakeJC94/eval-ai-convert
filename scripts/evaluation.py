@@ -27,7 +27,6 @@ import logging
 from pathlib import Path
 
 import pandas as pd
-import numpy as np
 import plotly.graph_objects as go
 from sklearn.metrics import roc_curve, roc_auc_score
 
@@ -51,7 +50,7 @@ logger.info(f"Loading predictions from {PREDICTIONS_PATH}")
 assert Path(PREDICTIONS_PATH).exists(), f"File at {PREDICTIONS_PATH = } does not exist."
 input_csv = pd.read_csv(PREDICTIONS_PATH)
 
-logger.info(f"Verifying predictions input")
+logger.info("Verifying predictions input")
 assert all(
     col in ["filepath", "prediction"] for col in input_csv.columns.tolist()
 ), f"Incorrect columns in {PREDICTIONS_PATH}, expected 'filepath, prediction'."
@@ -60,11 +59,8 @@ assert (input_csv["prediction"] <= 1).all() and (
     input_csv["prediction"] >= 0
 ).all(), f"Invalid predictions detected in {PREDICTIONS_PATH}."
 assert (
-    input_csv["filepath"].apply(lambda fp: fp.split("/")[0]) == "test"
-).all(), "Expected first dir of each entry in 'filepath' to begin with split 'test'."
-assert (
-    input_csv["filepath"].apply(lambda fp: fp.split("/")[1]).isin(PATIENT_IDS)
-).all(), "Expected second dir in each entry in 'filepath' to have valid patient_id."
+    input_csv["filepath"].apply(lambda fp: fp.split("/")[0]).isin(PATIENT_IDS)
+).all(), "Expected first dir in each entry in 'filepath' to have valid patient_id."
 
 logger.info("Loading validation labels for all patients")
 results = pd.DataFrame()
@@ -80,7 +76,7 @@ assert input_csv["filepath"].equals(
 ), f"Expected {PREDICTIONS_PATH} to contain predictions for all files in test splits."
 
 results["prediction"] = input_csv["prediction"]
-results["patient_id"] = results["filepath"].apply(lambda fp: fp.split("/")[1])
+results["patient_id"] = results["filepath"].apply(lambda fp: fp.split("/")[0])
 
 metrics = [{"patient_id": pid, "ROC_AUC": None} for pid in PATIENT_IDS + ["all"]]
 metrics = pd.DataFrame(metrics)
